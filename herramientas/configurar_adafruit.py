@@ -47,11 +47,11 @@ BLOQUES = [
      {"minValue": "0", "maxValue": "50", "label": "°C", "decimalPlaces": "1"}, 0, 4, 3, 3),
     ("Humedad suelo", "gauge", [f"{P}-humedad-suelo"],
      {"minValue": "0", "maxValue": "100", "label": "%", "decimalPlaces": "0"}, 3, 4, 3, 3),
-    ("Modo", "toggle", [f"{P}-modo"],
+    ("Modo", "toggle_button", [f"{P}-modo"],
      {"onText": "AUTO", "offText": "MANUAL", "onValue": "AUTO", "offValue": "MANUAL"}, 6, 4, 2, 2),
-    ("Ventilador", "toggle", [f"{P}-ventilador"], TOGGLE, 8, 4, 2, 2),
-    ("Bomba", "toggle", [f"{P}-bomba"], TOGGLE, 10, 4, 2, 2),
-    ("Luz crecimiento", "toggle", [f"{P}-luz"], TOGGLE, 6, 6, 2, 2),
+    ("Ventilador", "toggle_button", [f"{P}-ventilador"], TOGGLE, 8, 4, 2, 2),
+    ("Bomba", "toggle_button", [f"{P}-bomba"], TOGGLE, 10, 4, 2, 2),
+    ("Luz crecimiento", "toggle_button", [f"{P}-luz"], TOGGLE, 6, 6, 2, 2),
     ("Temp. máxima (ventilador)", "slider", [f"{P}-temp-max"],
      {"min": "20", "max": "40", "step": "0.5"}, 8, 6, 4, 2),
     ("Alertas", "stream", [f"{P}-alertas"],
@@ -106,7 +106,37 @@ def main():
             "block_feeds": [{"feed_id": str(ids[f])} for f in feeds]}})
         print(f"  bloque '{nombre}' ({tipo}): creado")
 
+    acomodar_bloques()
     print(f"\nListo: https://io.adafruit.com/{config.AIO_USERNAME}/dashboards/{DASHBOARD_KEY}")
+
+
+# Posición de cada bloque en la cuadrícula de pantallas grandes (16 columnas):
+# nombre -> (x, y, ancho, alto)
+DISTRIBUCION = {
+    "Temperatura y humedad": (0, 0, 8, 4),
+    "Luz y suelo": (8, 0, 8, 4),
+    "Temperatura": (0, 4, 3, 3),
+    "Humedad suelo": (3, 4, 3, 3),
+    "Modo": (6, 4, 2, 2),
+    "Ventilador": (8, 4, 2, 2),
+    "Bomba": (10, 4, 2, 2),
+    "Luz crecimiento": (12, 4, 2, 2),
+    "Temp. máxima (ventilador)": (6, 6, 8, 2),
+    "Alertas": (0, 8, 16, 2),
+}
+
+
+def acomodar_bloques():
+    """La API ignora column/row al crear bloques; la posición se guarda en
+    el campo `layouts` del dashboard (una distribución por tamaño de pantalla)."""
+    tablero = api("GET", f"/dashboards/{DASHBOARD_KEY}")
+    ids = {b["name"]: str(b["id"]) for b in api("GET", f"/dashboards/{DASHBOARD_KEY}/blocks")}
+    grande = [{"i": ids[n], "x": x, "y": y, "w": w, "h": h}
+              for n, (x, y, w, h) in DISTRIBUCION.items() if n in ids]
+    layouts = dict(tablero.get("layouts") or {})
+    layouts["xl"] = layouts["lg"] = grande
+    api("POST", f"/dashboards/{DASHBOARD_KEY}/update_layouts", {"layouts": layouts})
+    print("  distribución del dashboard: actualizada")
 
 
 if __name__ == "__main__":

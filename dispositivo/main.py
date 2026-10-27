@@ -154,7 +154,8 @@ class Invernadero:
             self.pantalla.mostrar("WiFi OK", "Conectando MQTT")
             self.mqtt.conectar()
         else:
-            self.pantalla.mostrar("Sin WiFi", "Modo local")
+            # El control local sigue funcionando; red.py reintenta en segundo plano
+            self.pantalla.mostrar("Sin WiFi", "Reintentando...")
 
     def ejecutar(self):
         self.iniciar()

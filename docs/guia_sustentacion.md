@@ -50,7 +50,11 @@ El gateway guarda cada comando en SQLite como `pendiente` con un `id` y lo enví
 Por tres razones. El enunciado pide un broker HiveMQ, Mosquitto o EMQX. SQLite no corre en un microcontrolador. Y así la clave de la nube no queda grabada en el firmware. El gateway además controla el límite de 30 datos/min del plan gratuito.
 
 **¿Cómo se manejan las desconexiones?**
-En el ESP32, `red.py` detecta el error, marca la conexión como caída y reintenta cada 5 s sin bloquear el control local: el invernadero sigue funcionando sin Internet. En el gateway, paho-mqtt reconecta solo (`reconnect_delay_set`).
+En dos niveles, sin bloquear nunca el control local: el invernadero sigue regulando temperatura, riego y luz aunque no haya Internet.
+- **WiFi:** si no conecta en 30 s al arrancar, el programa sigue funcionando y `red.py` revisa el WiFi cada 20 s. Si el ESP32 no está ya intentando conectarse (`STAT_CONNECTING`), relanza la conexión. Esto se probó en Wokwi: con la red simulada lenta, el ESP32 arrancó sin WiFi, se recuperó solo y empezó a publicar.
+- **MQTT:** cuando hay WiFi pero se cae el broker, `revisar()` detecta el error, marca la conexión como caída y reintenta cada 5 s.
+
+En el gateway, paho-mqtt reconecta solo (`reconnect_delay_set`).
 
 **¿Por qué SQLite?**
 No necesita servidor y es un solo archivo, suficiente para un gateway. El esquema está en `sql/schema.sql`, con índices por fecha para las consultas de históricos.

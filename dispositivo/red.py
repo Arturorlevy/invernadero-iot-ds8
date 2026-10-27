@@ -19,22 +19,58 @@ import ubinascii
 from umqtt.simple import MQTTClient
 
 
-def conectar_wifi(ssid, password, timeout_s=20):
-    """Conecta la interfaz STA del ESP32. Devuelve True si lo logra."""
-    wlan = network.WLAN(network.STA_IF)
-    wlan.active(True)
-    if wlan.isconnected():
+_wlan = None
+_credenciales = None
+
+
+def conectar_wifi(ssid, password, timeout_s=30):
+    """Conecta la interfaz STA del ESP32. Devuelve True si lo logra.
+
+    Si no lo logra a tiempo, el bucle principal sigue funcionando en modo
+    local y `ClienteMQTT.revisar()` reintenta el WiFi periódicamente.
+    """
+    global _wlan, _credenciales
+    _credenciales = (ssid, password)
+    _wlan = network.WLAN(network.STA_IF)
+    _wlan.active(True)
+    if _wlan.isconnected():
         return True
     print("[wifi] conectando a", ssid)
-    wlan.connect(ssid, password)
+    _wlan.connect(ssid, password)
     inicio = time.ticks_ms()
-    while not wlan.isconnected():
+    while not _wlan.isconnected():
         if time.ticks_diff(time.ticks_ms(), inicio) > timeout_s * 1000:
-            print("[wifi] tiempo de espera agotado")
+            print("[wifi] tiempo de espera agotado; se reintentara en segundo plano")
             return False
         time.sleep_ms(200)
-    print("[wifi] conectado, IP:", wlan.ifconfig()[0])
+    print("[wifi] conectado, IP:", _wlan.ifconfig()[0])
     return True
+
+
+def wifi_conectado():
+    return _wlan is not None and _wlan.isconnected()
+
+
+_ultimo_reintento_wifi = 0
+INTERVALO_REINTENTO_WIFI_MS = 20000  # dar tiempo a que la asociación termine
+
+
+def reintentar_wifi():
+    """Relanza la conexión WiFi sin bloquear (no espera el resultado)."""
+    global _ultimo_reintento_wifi
+    if _wlan is None or _credenciales is None or _wlan.isconnected():
+        return
+    ahora = time.ticks_ms()
+    if time.ticks_diff(ahora, _ultimo_reintento_wifi) < INTERVALO_REINTENTO_WIFI_MS:
+        return
+    _ultimo_reintento_wifi = ahora
+    if _wlan.status() == network.STAT_CONNECTING:
+        return  # el ESP32 sigue intentando por su cuenta: no interrumpirlo
+    print("[wifi] reintentando conexion...")
+    try:
+        _wlan.connect(*_credenciales)
+    except OSError as e:
+        print("[wifi] error al reintentar:", e)
 
 
 class ClienteMQTT:
@@ -85,7 +121,13 @@ class ClienteMQTT:
         ahora = time.ticks_ms()
         if not self.conectado:
             if time.ticks_diff(ahora, self._ultimo_intento) >= self.intervalo_reconexion:
-                self.conectar()
+                if wifi_conectado():
+                    self.conectar()
+                else:
+                    # Sin WiFi no tiene sentido intentar MQTT: se reintenta el
+                    # WiFi y MQTT se intentará en la siguiente ventana.
+                    self._ultimo_intento = ahora
+                    reintentar_wifi()
             return
         try:
             self._cliente.check_msg()
