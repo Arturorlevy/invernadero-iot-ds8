@@ -17,6 +17,10 @@ Un ESP32 simulado en **Wokwi** ([abrir simulación](https://wokwi.com/projects/4
 
 ## Capturas
 
+**Dashboard de Adafruit IO en vivo:** gráficas, medidores, controles remotos y alertas.
+
+![Dashboard Adafruit IO](docs/capturas/07_dashboard_adafruit.png)
+
 | Circuito en Wokwi | Alarma: ventilador, bomba, luz y buzzer activos |
 |---|---|
 | ![Circuito](docs/capturas/01_circuito_wokwi.png) | ![Alerta](docs/capturas/03_simulacion_alerta.png) |
