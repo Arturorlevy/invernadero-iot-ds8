@@ -1,0 +1,64 @@
+{
+  "version": 1,
+  "author": "Estefanny Zambrano, Alberto Chen, Edwin Moreno, Arturo Rodríguez",
+  "editor": "wokwi",
+  "parts": [
+    { "type": "board-esp32-devkit-c-v4", "id": "esp", "top": 0, "left": 0, "attrs": { "env": "micropython-20260406-v1.28.0" } },
+    { "type": "wokwi-lcd1602", "id": "lcd1", "top": -230, "left": -60, "attrs": { "pins": "i2c" } },
+    { "type": "wokwi-dht22", "id": "dht1", "top": -130, "left": 290, "attrs": { "temperature": "26", "humidity": "60" } },
+    { "type": "wokwi-photoresistor-sensor", "id": "ldr1", "top": -20, "left": -330, "attrs": {} },
+    { "type": "wokwi-potentiometer", "id": "pot1", "top": 80, "left": -250, "attrs": { "value": "550" } },
+    { "type": "wokwi-relay-module", "id": "rele_vent", "top": 220, "left": -330, "attrs": {} },
+    { "type": "wokwi-relay-module", "id": "rele_bomba", "top": 300, "left": -330, "attrs": {} },
+    { "type": "wokwi-pushbutton", "id": "btn1", "top": 30, "left": 260, "attrs": { "color": "blue", "label": "AUTO/MAN" } },
+    { "type": "wokwi-led", "id": "led_luz", "top": 120, "left": 280, "attrs": { "color": "yellow", "label": "Luz" } },
+    { "type": "wokwi-resistor", "id": "r_luz", "top": 200, "left": 240, "attrs": { "value": "220" } },
+    { "type": "wokwi-led", "id": "led_alarma", "top": 120, "left": 340, "attrs": { "color": "red", "label": "Alarma" } },
+    { "type": "wokwi-resistor", "id": "r_alarma", "top": 240, "left": 240, "attrs": { "value": "220" } },
+    { "type": "wokwi-buzzer", "id": "bz1", "top": 110, "left": 410, "attrs": { "volume": "0.1" } }
+  ],
+  "connections": [
+    [ "esp:TX", "$serialMonitor:RX", "", [] ],
+    [ "esp:RX", "$serialMonitor:TX", "", [] ],
+
+    [ "lcd1:GND", "esp:GND.2", "black", [ "h-40", "v190", "h300" ] ],
+    [ "lcd1:VCC", "esp:5V", "red", [ "h-50", "v420" ] ],
+    [ "lcd1:SDA", "esp:21", "green", [ "h-60", "v170", "h300" ] ],
+    [ "lcd1:SCL", "esp:22", "gold", [ "h-70", "v160", "h310" ] ],
+
+    [ "dht1:VCC", "esp:3V3", "red", [] ],
+    [ "dht1:GND", "esp:GND.2", "black", [] ],
+    [ "dht1:SDA", "esp:15", "green", [] ],
+
+    [ "ldr1:VCC", "esp:3V3", "red", [] ],
+    [ "ldr1:GND", "esp:GND.1", "black", [] ],
+    [ "ldr1:AO", "esp:34", "orange", [] ],
+
+    [ "pot1:VCC", "esp:3V3", "red", [] ],
+    [ "pot1:GND", "esp:GND.1", "black", [] ],
+    [ "pot1:SIG", "esp:35", "blue", [] ],
+
+    [ "rele_vent:VCC", "esp:5V", "red", [] ],
+    [ "rele_vent:GND", "esp:GND.1", "black", [] ],
+    [ "rele_vent:IN", "esp:26", "purple", [] ],
+
+    [ "rele_bomba:VCC", "esp:5V", "red", [] ],
+    [ "rele_bomba:GND", "esp:GND.1", "black", [] ],
+    [ "rele_bomba:IN", "esp:27", "cyan", [] ],
+
+    [ "btn1:1.l", "esp:4", "blue", [] ],
+    [ "btn1:2.l", "esp:GND.3", "black", [] ],
+
+    [ "r_luz:1", "esp:14", "yellow", [] ],
+    [ "r_luz:2", "led_luz:A", "yellow", [] ],
+    [ "led_luz:C", "esp:GND.3", "black", [] ],
+
+    [ "r_alarma:1", "esp:13", "red", [] ],
+    [ "r_alarma:2", "led_alarma:A", "red", [] ],
+    [ "led_alarma:C", "esp:GND.3", "black", [] ],
+
+    [ "bz1:1", "esp:GND.3", "black", [] ],
+    [ "bz1:2", "esp:25", "magenta", [] ]
+  ],
+  "dependencies": {}
+}

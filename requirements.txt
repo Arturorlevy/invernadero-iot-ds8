@@ -1,0 +1,26 @@
+# ===========================================================================
+# Invernadero Inteligente IoT - Desarrollo de Software VIII - Parcial #2
+#
+# Integrantes que aportaron al desarrollo:
+#   - Estefanny Zambrano : Base de datos SQLite y consultas de históricos
+#                          (sql/, gateway/database.py, gateway/consultas.py)
+#   - Alberto Chen       : Arquitectura, diagramas, circuito Wokwi y
+#                          programación orientada a eventos
+#                          (docs/arquitectura.md, diagram.json, event_bus.py, main.py)
+#   - Edwin Moreno       : Sensores, actuadores y lógica de control
+#                          (sensores.py, actuadores.py, lcd_i2c.py, controlador.py)
+#   - Arturo Rodríguez   : Comunicación MQTT y plataforma Cloud Adafruit IO
+#                          (red.py, gateway/enlace_*.py, gateway/servicio.py)
+#
+# Dependencias del GATEWAY (PC, Python 3.10+):
+#   pip install -r requirements.txt
+#
+# El DISPOSITIVO (ESP32 en Wokwi) usa MicroPython y sus módulos integrados:
+#   machine (GPIO, ADC, PWM, I2C), dht, network, umqtt.simple, ujson
+# No requieren instalación.
+# ===========================================================================
+
+paho-mqtt>=2.0,<3.0    # Cliente MQTT (HiveMQ y Adafruit IO)
+python-dotenv>=1.0     # Carga de credenciales desde .env
+
+# sqlite3, json, logging, argparse, csv, ssl, threading -> biblioteca estándar
