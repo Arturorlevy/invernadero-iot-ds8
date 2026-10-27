@@ -2,7 +2,7 @@
 
 **Desarrollo de Software VIII — Parcial #2: Sistema IoT de Monitoreo y Control Inteligente**
 
-Un ESP32 simulado en **Wokwi** con MicroPython mide las condiciones de un invernadero y controla ventilación, riego e iluminación de forma automática. Los datos viajan por **MQTT (HiveMQ)** hasta un **gateway en Python**, que los guarda en **SQLite** y los publica en **Adafruit IO**. Desde el dashboard de Adafruit IO se ven los datos en tiempo real y se envían comandos de vuelta al dispositivo.
+Un ESP32 simulado en **Wokwi** ([abrir simulación](https://wokwi.com/projects/479012574867451905)) con MicroPython mide las condiciones de un invernadero y controla ventilación, riego e iluminación de forma automática. Los datos viajan por **MQTT (HiveMQ)** hasta un **gateway en Python**, que los guarda en **SQLite** y los publica en **Adafruit IO**. Desde el dashboard de Adafruit IO se ven los datos en tiempo real y se envían comandos de vuelta al dispositivo.
 
 ## Integrantes y aportes
 
