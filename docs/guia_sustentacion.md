@@ -22,11 +22,12 @@ Al final hay **material de apoyo** para todos: el dashboard bloque por bloque, e
 
 ## Antes de empezar (5 minutos antes)
 
-1. Abrir una terminal en la carpeta `invernadero-iot` y ejecutar `python -m gateway`. Esperar a ver "Conectado a Adafruit IO" y "Conectado al broker del dispositivo".
-2. Abrir el proyecto en Wokwi y pulsar ▶. Esperar a ver `[mqtt] conectado` en el monitor serie. Si el WiFi de Wokwi tarda, el ESP32 reintenta solo: esperar hasta un par de minutos.
-3. Abrir el dashboard de Adafruit IO en otra pestaña y comprobar que los medidores muestran datos.
-4. Dejar el modo en **AUTO** y el DHT22 en **26 °C**, para empezar desde condiciones normales.
-5. Tener abiertas, en este orden: el diagrama de arquitectura (`docs/arquitectura.md` en GitHub, o `Arquitectura_IoT.docx`), la pestaña de Wokwi, el dashboard y una segunda terminal para las consultas.
+1. **Conectar la PC al hotspot del celular**, no al WiFi de la universidad. Muchas redes institucionales bloquean los puertos de MQTT (1883 y 8883): en una prueba, el gateway no lograba conectarse a HiveMQ ni a Adafruit hasta cambiar a los datos del celular.
+2. Abrir una terminal en la carpeta `invernadero-iot` y ejecutar `python -m gateway`. Esperar a ver "Conectado a Adafruit IO" y "Conectado al broker del dispositivo".
+3. Abrir el proyecto en Wokwi y pulsar ▶. Esperar a ver `[mqtt] conectado` en el monitor serie. Si el WiFi de Wokwi tarda, el ESP32 reintenta solo: esperar hasta un par de minutos. **Dejar la pestaña de Wokwi siempre visible**, porque si el navegador queda en segundo plano la simulación se pausa.
+4. Abrir el dashboard de Adafruit IO en otra pestaña y comprobar que los medidores muestran datos.
+5. Dejar el modo en **AUTO** y el DHT22 en **26 °C**, para empezar desde condiciones normales.
+6. Tener abiertas, en este orden: el diagrama de arquitectura (`docs/arquitectura.md` en GitHub, o `Arquitectura_IoT.docx`), la pestaña de Wokwi, el dashboard y una segunda terminal para las consultas.
 
 ---
 

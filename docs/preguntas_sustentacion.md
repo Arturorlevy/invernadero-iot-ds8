@@ -263,6 +263,9 @@ Adafruit reenvía a los suscriptores todo lo publicado, incluido lo que publica 
 
 *Mostrar:* `arquitectura.md`, diagrama 3.
 
+**R16b. ¿Por qué hacen la demo con el hotspot del celular y no con el WiFi de la universidad?**
+Porque muchas redes de universidades y empresas solo permiten la navegación web (puerto 443) y bloquean otros puertos, incluidos los de MQTT: 1883 sin cifrar y 8883 con TLS. Lo comprobamos en pruebas: en una red así, el gateway no podía conectarse a HiveMQ ni a Adafruit IO, aunque las páginas web cargaban normal. Con los datos del celular los puertos están abiertos, y el gateway se reconectó solo sin reiniciarlo. En un despliegue real se usaría MQTT sobre WebSockets por el puerto 443 o se pediría abrir el puerto en el firewall.
+
 **R17. ¿Qué tan seguro es el sistema?**
 La conexión con Adafruit va cifrada con TLS y la clave no está en el código. El punto débil es HiveMQ público, que no tiene usuario ni cifrado: cualquiera que conozca el tópico podría leerlo. Lo mitigamos con un tópico propio (`inv-ds8-zcmr`). En producción usaríamos un broker privado con TLS y autenticación.
 
@@ -359,6 +362,7 @@ Procesar datos cerca del dispositivo, en la red local, en vez de enviarlo todo a
 
 | Situación | Qué decir y hacer | Quién |
 |---|---|---|
+| El gateway no conecta a HiveMQ ni a Adafruit (en el log no aparece "Conectado") | La red del lugar bloquea los puertos de MQTT. Conectar la PC al **hotspot del celular**: el gateway se reconecta solo en unos segundos, sin reiniciarlo. Explicación: "Muchas redes de universidades y empresas solo dejan pasar la web (puerto 443) y bloquean MQTT (1883 y 8883)" | Arturo |
 | El WiFi de Wokwi tarda en conectar | "El WiFi simulado de Wokwi a veces tarda. Nuestro código lo reintenta solo cada 20 segundos, que es justo el manejo de desconexiones." Esperar | Arturo |
 | El dashboard no se actualiza al instante | "El gateway reenvía a la nube cada 20 segundos para respetar el límite del plan gratuito." Esperar unos segundos | Arturo |
 | Aparece "THROTTLE WARNING" en Adafruit | "Pulsamos muchos controles seguidos y superamos los 30 datos por minuto del plan gratuito. El sistema sigue funcionando." Esperar entre clics | Arturo |
